@@ -65,7 +65,7 @@ module.exports = {
     //组装xml数据
     var formData  = "<xml>";
     formData  += "<appid>"+appid+"</appid>";  //appid
-    formData  += "<body><![CDATA["+"测试微信支付"+"]]></body>";
+    formData  += "<body>宝马730</body>";
     formData  += "<mch_id>"+mch_id+"</mch_id>";  //商户号
     formData  += "<nonce_str>"+nonce_str+"</nonce_str>"; //随机字符串，不长于32位。
     formData  += "<notify_url>"+notify_url+"</notify_url>";
@@ -82,9 +82,9 @@ module.exports = {
       uri:'https://api.mch.weixin.qq.com/pay/unifiedorder',
       body:formData
     }
-    await rq.post(rqOpts).then(function(res){
-      console.log(res);
-    });
+    // await rq.post(rqOpts).then(function(res){
+    //   console.log(res);
+    // });
     // All done.
     return sign;
 
@@ -127,7 +127,7 @@ var WXPayUtilies = {
       var string = raw(ret);
       var key = mchkey;
       string = string + '&key=' + key;
-      //console.log('string=', string);
+      console.log('string=', string);
       var crypto = require('crypto');
       return crypto.createHash('md5').update(string, 'utf8').digest('hex').toUpperCase();
   },

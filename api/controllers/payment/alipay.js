@@ -48,12 +48,25 @@ module.exports = {
     params.set('sign_type', 'RSA2');
     params.set('timestamp', moment().format('YYYY-MM-DD HH:mm:ss'));
     params.set('version', '1.0');
-    params.set('notify_url', 'http://www.cheshoudang.com/payment/alipay');
+    params.set('notify_url', 'http://www.cheshoudang.com/payment/alipayurl');
     //params.set('biz_content', this._buildBizContent(inputs.body, inputs.subject, inputs.out_trade_no, inputs.total_amount));
     params.set('biz_content', _buildBizContent('宝马', '产品介绍', '201521546879', '0.1'));
+
+    //1.获取所有请求参数，不包括字节类型参数，如文件、字节流，剔除sign字段，剔除值为空的参数
+    //[...paramsMap]用来将paramsMap构造一个数组
+    let paramsList = [...params].filter(([k1, v1]) => k1 !== 'sign' && v1);
+    //2.按照字符的键值ASCII码递增排序
+    paramsList.sort();
+    //3.组合成“参数=参数值”的格式，并且把这些参数用&字符连接起来
+    let paramsString = paramsList.map(([k, v]) => `${k}=${v}`).join('&');
+
     let Singed= await _buildSign(params);
+
+    let secString=paramsString+"&sign="+Singed;
+    //console.log(secString);
+    //console.log(encodeURI(secString));
     // 完成后将返回给前端一个签名好的参数字符串，将这个字符串POST给阿里的支付宝网关url：https://openapi.alipay.com/gateway.do.
-    return Singed;
+    return encodeURI(secString);
     // All done.
   }
 
