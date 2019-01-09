@@ -8,6 +8,7 @@
     "@sailshq/connect-redis": "^3.2.1",
     "@sailshq/lodash": "^3.10.3",
     "@sailshq/socket.io-redis": "^5.2.0",
+    "alipay-sdk": "^3.0.4",
     "crypto": "^1.0.1",
     "fs": "0.0.1-security",
     "moment": "^2.23.0",

@@ -39,14 +39,14 @@ module.exports = {
     //var body=inputs.body;  在正式上线时，请使用这个
     var body="宝马730"
     var nonce_str=WXPayUtilies.createNonceStr();
-    var spbill_create_ip='39.104.163.248';
+    var spbill_create_ip='60.31.46.82';
     var trade_type='APP';
     //var out_trade_no=inputs.tradeNo;  在正式上线时，请使用这个
     var out_trade_no='56456789456';
     //var total_fee=inputs.totalFee; 在正式上线时，请使用这个
     var total_fee='0.01';   
-    var notify_url='http://www.cheshoudang/payment/weixin';
-    var mchkey="8r435jVd7yA0354nsvkxb4cN3x7Se4322";  //请在商户平台再次确认该签名秘钥，并使用最终的
+    var notify_url='http://www.cheshoudang/payment/weixinurl';
+    var mchkey="h2yFqyTf1hAlJDta57wYSh15dK5M1Egl";  //请在商户平台再次确认该签名秘钥，并使用最终的
 
     //let sign = wxpay.paysignjsapi(appid,body,mch_id,nonce_str,notify_url,out_trade_no,spbill_create_ip,total_fee,trade_type,mchkey);
     let sign =WXPayUtilies.paysignjsapi(
@@ -75,7 +75,7 @@ module.exports = {
     formData  += "<trade_type>"+trade_type+"</trade_type>";
     formData  += "<sign>"+sign+"</sign>";
     formData  += "</xml>";
-    //console.log(formData);
+    console.log(formData);
     var rq=require('request-promise');
     var rqOpts={
       method:'post',
@@ -184,6 +184,4 @@ function raw(args) {
   return string;
 }
 
-function test(){
-  return 'ttt';
-}
+

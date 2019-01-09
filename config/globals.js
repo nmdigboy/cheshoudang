@@ -53,5 +53,4 @@ module.exports.globals = {
   // fs:require('fs'),
   //moment:require('moment'),
   crypto:require('crypto'),
-
 };

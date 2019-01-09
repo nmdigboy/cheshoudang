@@ -39,38 +39,70 @@ module.exports = {
   },
 
 
+  // fn: async function (inputs) {
+  //   let AlipaySDK=require('alipay-sdk').default;
+  //   var moment=require('moment');
+  //   console.log(__dirname);
+  //   let alipaySdk=new AlipaySDK({
+  //       appId:'2018120162374692',
+  //       privateKey:fs.readFileSync('./assets/keys/private-key.pem', 'utf8'),
+  //       alipayPublicKey:fs.readFileSync('./assets/keys/public-key.pem', 'utf8')
+  //   });
+  //   let resule=await alipaySdk.exec('https://openapi.alipay.com/gateway.do',{
+  //     method:'alipay.trade.app.pay',
+  //     charset:'utf-8',
+  //     sign_type:'RSA2',
+  //     version:'1.0',
+  //     timestamp:moment().format('YYYY-MM-DD HH:mm:ss'),
+  //     notifyUrl: 'http://www.cheshoudang.com/payment/alipayurl',
+  //     biz_content:{
+  //        body:'这里时支付宝测试的商品描述信息',
+  //        subject:'产品名称',
+  //        out_trade_no:'4564567897456',
+  //        total_amount:'0.1'
+  //     }
+  //   },
+  //   {
+  //      validateSign:true
+  //   })
+  //   console.log(resule);
+  //   return resule;
+  // }
+
   fn: async function (inputs) {
-    var moment=require('moment');
-    let params = new Map();
-    params.set('app_id', '2018120162374692');
-    params.set('method', 'alipay.trade.app.pay');
-    params.set('charset', 'utf-8');
-    params.set('sign_type', 'RSA2');
-    params.set('timestamp', moment().format('YYYY-MM-DD HH:mm:ss'));
-    params.set('version', '1.0');
-    params.set('notify_url', 'http://www.cheshoudang.com/payment/alipayurl');
-    //params.set('biz_content', this._buildBizContent(inputs.body, inputs.subject, inputs.out_trade_no, inputs.total_amount));
-    params.set('biz_content', _buildBizContent('宝马', '产品介绍', '201521546879', '0.1'));
+  var moment=require('moment');
+  let params = new Map();
+  params.set('app_id', '2018120162374692');
+  params.set('method', 'alipay.trade.app.pay');
+  params.set('charset', 'utf-8');
+  params.set('sign_type', 'RSA2');
+  params.set('timestamp', moment().format('YYYY-MM-DD HH:mm:ss'));
+  params.set('version', '1.0');
+  params.set('notify_url', 'http://www.cheshoudang.com/payment/alipayurl');
+  //params.set('biz_content', this._buildBizContent(inputs.body, inputs.subject, inputs.out_trade_no, inputs.total_amount));
+  params.set('biz_content', _buildBizContent('宝马', '产品介绍', '201521546879', '0.1'));
 
-    //1.获取所有请求参数，不包括字节类型参数，如文件、字节流，剔除sign字段，剔除值为空的参数
-    //[...paramsMap]用来将paramsMap构造一个数组
-    let paramsList = [...params].filter(([k1, v1]) => k1 !== 'sign' && v1);
-    //2.按照字符的键值ASCII码递增排序
-    paramsList.sort();
-    //3.组合成“参数=参数值”的格式，并且把这些参数用&字符连接起来
-    let paramsString = paramsList.map(([k, v]) => `${k}=${v}`).join('&');
+  //1.获取所有请求参数，不包括字节类型参数，如文件、字节流，剔除sign字段，剔除值为空的参数
+  //[...paramsMap]用来将paramsMap构造一个数组
+  let paramsList = [...params].filter(([k1, v1]) => k1 !== 'sign' && v1);
+  //2.按照字符的键值ASCII码递增排序
+  paramsList.sort();
+  //3.组合成“参数=参数值”的格式，并且把这些参数用&字符连接起来
+  let paramsString = paramsList.map(([k, v]) => `${k}=${v}`).join('&');
 
-    let Singed= await _buildSign(params);
+  let Singed= await _buildSign(params);
 
-    let secString=paramsString+"&sign="+Singed;
-    //console.log(secString);
-    //console.log(encodeURI(secString));
-    // 完成后将返回给前端一个签名好的参数字符串，将这个字符串POST给阿里的支付宝网关url：https://openapi.alipay.com/gateway.do.
-    return encodeURI(secString);
-    // All done.
-  }
+  let secString=paramsString+"&sign="+Singed;
+  console.log(secString);
+  console.log(encodeURI(secString));
+  //完成后将返回给前端一个签名好的参数字符串，将这个字符串POST给阿里的支付宝网关url：https://openapi.alipay.com/gateway.do.
+  return encodeURI(secString);
+ // All done.
+}
 
 };
+
+
 
   //将内容进行签名
   function _buildSign(paramsMap) {
