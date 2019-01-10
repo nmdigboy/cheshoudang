@@ -34,6 +34,9 @@ module.exports = {
 
   fn: async function (inputs) {
 
+    var xmlreader = require("xmlreader");
+
+    //签名所需数据
     var appid="wxe78321de5f6234fe";
     var mch_id="1508392321";  //需要确认一下mch_id ，微信开放平台
     //var body=inputs.body;  在正式上线时，请使用这个
@@ -42,30 +45,19 @@ module.exports = {
     var spbill_create_ip='60.31.46.82';
     var trade_type='APP';
     //var out_trade_no=inputs.tradeNo;  在正式上线时，请使用这个
-    var out_trade_no='56456789456';
+    var out_trade_no='526313456412';
     //var total_fee=inputs.totalFee; 在正式上线时，请使用这个
-    var total_fee='0.01';   
+    var total_fee=WXPayUtilies.getmoney('0.01');   
     var notify_url='http://www.cheshoudang/payment/weixinurl';
     var mchkey="h2yFqyTf1hAlJDta57wYSh15dK5M1Egl";  //请在商户平台再次确认该签名秘钥，并使用最终的
 
-    //let sign = wxpay.paysignjsapi(appid,body,mch_id,nonce_str,notify_url,out_trade_no,spbill_create_ip,total_fee,trade_type,mchkey);
-    let sign =WXPayUtilies.paysignjsapi(
-      appid,
-      body,
-      mch_id,
-      nonce_str,
-      notify_url,
-      out_trade_no,
-      spbill_create_ip,
-      total_fee,
-      trade_type,
-      mchkey
-      );
+    //第一次签名，用于生成预订单
+    let sign =WXPayUtilies.paysignjsapi(appid,body, mch_id,nonce_str,notify_url,out_trade_no,spbill_create_ip,total_fee,trade_type,mchkey);
     
     //组装xml数据
     var formData  = "<xml>";
     formData  += "<appid>"+appid+"</appid>";  //appid
-    formData  += "<body>宝马730</body>";
+    formData  += "<body>"+body+"</body>";
     formData  += "<mch_id>"+mch_id+"</mch_id>";  //商户号
     formData  += "<nonce_str>"+nonce_str+"</nonce_str>"; //随机字符串，不长于32位。
     formData  += "<notify_url>"+notify_url+"</notify_url>";
@@ -75,18 +67,37 @@ module.exports = {
     formData  += "<trade_type>"+trade_type+"</trade_type>";
     formData  += "<sign>"+sign+"</sign>";
     formData  += "</xml>";
-    console.log(formData);
+    //console.log(formData);
     var rq=require('request-promise');
+
+    //返回预订单信息开始
+    var preOrder="";
     var rqOpts={
       method:'post',
       uri:'https://api.mch.weixin.qq.com/pay/unifiedorder',
       body:formData
     }
-    // await rq.post(rqOpts).then(function(res){
-    //   console.log(res);
-    // });
+
+    await rq.post(rqOpts).then(function(res){
+      console.log(res);
+      preOrder=res;
+    });
+
+    //从返回的数据中获取预支付订单id
+    var  prepay_id;
+    xmlreader.read(preOrder.toString('utf-8'),function(errors,resp){
+        prepay_id = resp.xml.prepay_id.text();
+        console.log(prepay_id);
+       
+    });
+
+    //第二次签名
+    let timestamp=WXPayUtilies.createTimeStamp();
+    let finalsign = WXPayUtilies.paysignjsapifinal(appid,mch_id,prepay_id,nonce_str,timestamp,mchkey);
+    let returnData={'appId':appid,'partnerId':mch_id,'prepayId':prepay_id,'nonceStr':nonce_str,'timeStamp':timestamp,'package':'Sign=WXPay','sign':finalsign};
+    console.log(returnData);
     // All done.
-    return sign;
+    return JSON.stringify(returnData);
 
   }
 
@@ -127,8 +138,8 @@ var WXPayUtilies = {
       var string = raw(ret);
       var key = mchkey;
       string = string + '&key=' + key;
-      console.log('string=', string);
-      var crypto = require('crypto');
+      //console.log('string=', string);
+      //var crypto = require('crypto');
       return crypto.createHash('md5').update(string, 'utf8').digest('hex').toUpperCase();
   },
   //签名加密算法,第二次的签名
