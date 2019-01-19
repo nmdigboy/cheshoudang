@@ -67,7 +67,7 @@ module.exports = {
     formData  += "<trade_type>"+trade_type+"</trade_type>";
     formData  += "<sign>"+sign+"</sign>";
     formData  += "</xml>";
-    //console.log(formData);
+    console.log(formData);
     var rq=require('request-promise');
 
     //返回预订单信息开始

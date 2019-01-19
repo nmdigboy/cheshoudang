@@ -1,0 +1,37 @@
+<div id="distribution" v-cloak>
+    <div class="container mt-5">
+        <h1 class="text-center">车手档分销系统</h1>
+        <div class="signup-form">
+            <p class="text-center">欢迎注册车手档用户，在下方输入推荐人</p>
+            <hr>
+            <form class="ajax-form" parasails-component="ajax-form">
+                <div class="form-group"><label for="full-name">推荐人</label> <input id="full-name" type="text"
+                        placeholder="请输入您的推荐人" autocomplete="name" focus-first="" class="form-control">
+                    <!---->
+                </div>
+                <div class="form-group"><label for="email-address">注册邮箱</label> <input id="email-address" type="email"
+                        placeholder="sturgeon@example.com" autocomplete="email" class="form-control">
+                    <!---->
+                </div>
+                <div class="form-group"><label for="password">设置密码</label> <input id="password" type="password"
+                        placeholder="••••••••" autocomplete="new-password" class="form-control">
+                    <!---->
+                </div>
+                <div class="form-group"><label for="confirm-password">确认密码</label> <input id="confirm-password"
+                        type="password" placeholder="••••••••" autocomplete="new-password" class="form-control">
+                    <!---->
+                </div>
+                <div class="form-group form-check"><input id="terms-agreement" type="checkbox" class="form-check-input">
+                    <label for="terms-agreement" class="form-check-label">我已经阅读 &amp; 并同意 <a target="_blank"
+                            href="/terms">车手档相关服务</a>.</label></div>
+                <!---->
+                <div class="form-group"><button type="submit" class="btn ajax-button btn-dark btn-lg btn-block"
+                        parasails-component="ajax-button"><span class="button-text">创建用户</span>
+                        <!----></button></div>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+<%- /* Expose server-rendered data as window.SAILS_LOCALS :: */ exposeLocalsToBrowser() %>
